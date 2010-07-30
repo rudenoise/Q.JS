@@ -1,4 +1,4 @@
-/*global window, Q, ovi, module, ok, alert, orpheus, music, test, asyncTest, expect, equals, notEqual, start*/
+/*global window, Q, module, ok, alert, test, asyncTest, expect, equals, notEqual, start*/
 module("Q(uestions)");
 test("isFun", function () {
     ok(typeof(Q.isFun) === "function", "isFun() objHas");
