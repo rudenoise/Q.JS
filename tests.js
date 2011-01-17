@@ -141,3 +141,22 @@ test("objHas", function () {
     ok(!Q.objHas("", "a.d.c"), "rejects obj with bad 1st arg");
     ok(Q.objHas(t, ""), "empty chain is true");
 });
+test("inArr", function () {
+    ok(m.isFun(m.inArr), "inArr is a function");
+    ok((m.inArr()) === false, "returns false for no/bad args");
+    var tArr1 = [1, "a", true], tValA = {a: 2}, tValB = {a: 2};
+    ok(m.inArr(1, tArr1), "returns true if match found");
+    ok(m.inArr("a", tArr1), "returns true if match found");
+    ok(m.inArr(true, tArr1), "returns true if match at any position");
+    ok(m.inArr(123, tArr1) === false, "returns false for no match");
+    ok(m.inArr(tValA, [tValB]) === false, "can't compare similar objects");
+    ok(m.inArr(tValB, [tValB]), "can compare objects from same memory loc");
+    tValA = function () {
+        return true;
+    };
+    tValB = function () {
+        return true;
+    };
+    ok(m.inArr(tValA, [tValB]) === false, "can't compare similar functions");
+    ok(m.inArr(tValB, [tValB]), "can compare functions from same memory loc");
+});
