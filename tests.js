@@ -92,6 +92,12 @@ test("q.isEq - q.is equal?", function () {
   ok(q.isEq("str", "str"), "identical string values pass");
   ok(!q.isEq(1, "str"), "none identical values fail");
 });
+test("q.isDOM - is the argument a DOM element", function () {
+  ok(q.isF(q.isDOM), "isDOM is a function");
+  ok((q.isDOM() &&
+    q.isDOM({})) === false, "rejects undefined and bad args");
+  ok(q.isDOM(document.createElement("div")), "recognises DOM element");
+});
 test("q.h - head of a list", function () {
   ok(q.isF(q.h), "q.h() exists");
   ok(q.h([1, 2, 3]) === 1, "returns the head of a list");
