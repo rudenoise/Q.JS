@@ -54,7 +54,7 @@ var q = (function (q) {
     return s === "";
   };
   q.isDOM = function (node) {
-    return q.isU(node) === false && "nodeType" in node;
+    return q.isU(node) === false && q.isU(node.nodeType) === false;
   };
   q.h = function (a) {
     // return the head of a list
