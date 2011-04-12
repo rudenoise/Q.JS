@@ -53,6 +53,9 @@ var q = (function (q) {
     // q.is s an empty string?
     return s === "";
   };
+  q.isDOM = function (node) {
+    return q.isU(node) === false && "nodeType" in node;
+  };
   q.h = function (a) {
     // return the head of a list
     if (q.isA(a)) {
