@@ -1,141 +1,115 @@
-var Q = Q || {};
-Q = (function (Q, recursive) {
-    recursive = recursive || false;
-    var toStr = Object.prototype.toString,
-        toArr = Array.prototype.slice;
-    //add basic questions/assertions to an object
-    Q.isFun = function (item) {
-        return typeof(item) === "function";
-    };
-    Q.isObj = function (item) {
-        return toStr.call(item) === "[object Object]";
-    };
-    Q.isArr = function (item) {
-        return toStr.call(item) === "[object Array]";
-    };
-    Q.isStr = function (item) {
-        return toStr.call(item) === "[object String]";
-    };
-    Q.isNum = function (item) {
-        return toStr.call(item) === "[object Number]" && !isNaN(item);
-    };
-    Q.isBool = function (item) {
-        // check for straight boolean, reject new Boolean(true)
-        return typeof(item) === "boolean";
-    };
-    Q.isEmptyArr = function (item) {
-        return Q.isArr(item) && item.length === 0;
-    };
-    Q.isEmptyStr = function (item) {
-        return Q.isEq(item, "");
-    };
-    Q.isEq = function (itemA, itemB) {
-        return itemA === itemB;
-    };
-    Q.isUndef = function (item) {
-        return typeof(item) === "undefined";
-    };
-    // (Q)ueue/list/array handeling
-    Q.h = function (arr) {
-        if (Q.isArr(arr)) {
-            return arr[0];
-        }
-    };
-    Q.t = function (arr) {
-        if (Q.isArr(arr)) {
-            return arr.slice(1, arr.length);
-        }
-    };
-    Q.con = function (inPut, list) {
-        if (Q.isArr(list) && inPut !== undefined) {
-            return [inPut].concat(list);
-        }
-    };
-    //switch between recursive and iterative methods
-    if (recursive !== false) {
-        Q.same = function () {
-            var args = toArr.call(arguments);
-            return Q.isEmptyArr(args) ? true :
-                args.length === 1 ? true : 
-                    Q.isEq(Q.h(args), Q.h(Q.t(args))) ? Q.same.apply(null, Q.t(args)) :
-                        false;
-        };
-        // check property chain, false
-        Q.objHas = function (obj, chain) {
-            if (Q.isStr(chain) && chain[0] !== ".") {
-                chain = chain.split(".");
-                return Q.isEmptyStr(Q.h(chain)) ? true :
-                    (obj.hasOwnProperty(Q.h(chain))) ? Q.objHas(obj[Q.h(chain)], Q.t(chain).join(".")) :
-                        false;
-            }
-        };
-        Q.fold = function (fun, start, arr) {
-            if (Q.isFun(fun) && (start !== undefined) && Q.isArr(arr)) {
-                return Q.isEmptyArr(arr) ? start :
-                    Q.fold(fun, fun(start, Q.h(arr)), Q.t(arr));
-            }
-        };
-        Q.inArr = function (val, arr) {
-            return Q.isArr(arr) && arr.length > 0 ?
-                val === Q.h(arr) ?
-                    true : Q.inArr(val, Q.t(arr)) :
-                false;
-        };
-    } else {
-        Q.same = function () {
-            var args = toArr.call(arguments), rtn = true, i = 1;
-            if (args.length > 1) {
-                while (i < args.length && rtn) {
-                    rtn = Q.isEq(args[(i - 1)], args[i]);
-                    i += 1;
-                }
-            }
-            return rtn;
-        };
-        Q.objHas = function (obj, chain) {
-            var rtn = true, i = 0;
-            if (Q.isStr(chain) && chain[0] !== ".") {
-                chain = chain.split(".");
-                while (i < chain.length && rtn) {
-                    if (obj.hasOwnProperty(chain[i]) || Q.same(chain[i], "")) {
-                        obj = obj[chain[i]];
-                    } else {
-                        rtn = false;
-                    }
-                    i += 1;
-                }
-                return rtn;
-            }
-        };
-        Q.fold = function (fun, start, arr) {
-            var i;
-            arr = toArr.call(arr, 0);
-            if (Q.isFun(fun) && (start !== undefined) && Q.isArr(arr)) {
-                for (i = 0; i < arr.length; i += 1) {
-                    start = fun(start, arr[i]);
-                }
-                return start;
-            }
-        };
-        Q.inArr = function (val, arr) {
-            if (Q.isArr(arr)) {
-                var i, l = arr.length;
-                for (i = 0; i < l; i += 1) {
-                    if (arr[i] === val) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        };
+var q = (function () {
+  var q = {};
+  q.toS = function (x) {
+    // shortcut q.toString
+    return Object.prototype.toString.call(x);
+  };
+  q.toA = function (o) {
+    // convert q.to an array, object needs indexes and length
+    return Array.prototype.slice.call(o);
+  };
+  q.isU = function (u) {
+    // return true id u q.is undefined
+    return typeof(u) === "undefined";
+  };
+  q.isF = function (f) {
+    // q.is f a function?
+    return typeof(f) === "function";
+  };
+  q.isO = function (o) {
+    // q.is "o" an Object?
+    return q.isU(o) === false && q.toS(o) === "[object Object]" &&
+      typeof(o.length) !== 'number' && typeof(o.splice) !== 'function';
+  };
+  q.isA = function (a) {
+    // q.is "a" an Array?
+    return q.isU(a) ?
+      false :
+      typeof(a.length) === 'number' &&
+      !(a.propertyIsEnumerable('length')) &&
+      typeof(a.splice) === 'function';
+
+  };
+  q.isS = function (s) {
+    // q.is s a string?
+    return q.isU(s) === false && q.toS(s) === "[object String]";
+  };
+  q.isN = function (n) {
+    // q.is n a number and not NaN?
+    return q.toS(n) === "[object Number]" && !isNaN(n);
+  };
+  q.isB = function (b) {
+    // q.is b a boolean, but not a new Boolean(true)
+    return typeof(b) === "boolean";
+  };
+  q.isEA = function (a) {
+    // q.is a an empty list?
+    return q.isA(a) && a.length === 0;
+  };
+  q.isEq = function (a, b) {
+    // q.is a the exact same as b?
+    return a === b;
+  };
+  q.isES = function (s) {
+    // q.is s an empty string?
+    return s === "";
+  };
+  q.h = function (a) {
+    // return the head of a list
+    if (q.isA(a)) {
+      return a[0];
     }
-    Q.map = function (fun, arr) {
-        var i, result = [];
-        if (Q.isFun(fun) && Q.isArr(arr)) {
-            return Q.fold(function (arr, element) {
-                return arr.concat(fun(element));
-            }, [], arr);
-        }
-    };
-    return Q;
-})(Q);
+  };
+  q.t = function (a) {
+    // return the tail of a list
+    if (q.isA(a)) {
+      return a.slice(1, a.length);
+    }
+  };
+  q.cons = function (inPut, list) {
+    // push inPut onto the front of a list
+    if (!q.isU(inPut) && q.isA(list)) {
+      return [inPut].concat(list);
+    }
+  };
+  q.areEq = function () {
+    var args = q.toA(arguments);
+    return q.isEA(args) ?
+      true :
+      args.length === 1 ?
+        true :
+        q.isEq(q.h(args), q.h(q.t(args))) ?
+          q.areEq.call(q.t(args)) :
+          false;
+  };
+  q.inA = function (val, arr) {
+    // q.is the value in arr (top level)
+    return !q.isA(arr) || q.isU(val) || q.isEA(arr) ?
+      false:
+      val === q.h(arr) ?
+        true : q.inA(val, q.t(arr));
+  };
+  q.flat = function (a, f) {
+    // flatten an array [1, [2], 3] -> [1, 2, 3] use with inA
+    f = q.isA(f) ? f : []; // f used q.to store return value
+    return !q.isA(a) ?
+      false :
+      q.isEA(a) ?
+        f :
+        q.isA(q.h(a)) ?
+          q.flat(q.h(a)).concat(q.flat(q.t(a), f)) :
+          q.cons(q.h(a), q.flat(q.t(a), f));
+  };
+  q.objHas = function (obj, chain) {
+    // feed me an object and a string representation of properties
+    // I'll return boolean if correct q.objHas({a: {b: 1}}, "a.b") -> true
+    if (q.isS(chain) && chain[0] !== ".") {
+      chain = chain.split(".");
+      return q.isES(q.h(chain)) ? true :
+        (obj.hasOwnProperty(q.h(chain))) ?
+          q.objHas(obj[q.h(chain)], q.t(chain).join(".")) :
+          false;
+    }
+  };
+  return q;
+}());
