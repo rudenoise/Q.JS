@@ -1,162 +1,166 @@
-/*global window, Q, module, ok, alert, test, asyncTest, expect, equals, notEqual, start*/
-module("Q(uestions)");
-test("isFun", function () {
-    ok(typeof(Q.isFun) === "function", "isFun() objHas");
-    ok(Q.isFun(function () {}), "accepts functions");
-    ok(!Q.isFun({}), "rejects objects");
-    ok(!Q.isFun([]), "rejects arrays");
-    ok(!Q.isFun(""), "rejects strings");
-    ok(!Q.isFun(6), "rejects numbers");
+module("Helpers", {
+  setup: function () {
+  },
+  teardown: function () {
+  }
 });
-test("isObj", function () {
-    ok(Q.isFun(Q.isObj), "isObj() objHas");
-    ok(Q.isObj({}), "accepts object");
-    ok(!Q.isObj(function () {}), "rejects functions");
-    ok(!Q.isObj([]), "rejects arrays");
-    ok(!Q.isObj(""), "rejects strings");
-    ok(!Q.isObj(6), "rejects numbers");
+test("q.toS - q.to string", function () {
+  ok(typeof(q.toS) === "function");
+  ok(q.toS({}) === "[object Object]");
 });
-test("isArr", function () {
-    ok(Q.isFun(Q.isArr), "isArr() objHas");
-    ok(Q.isArr([]), "accepts array");
-    ok(!Q.isArr(function () {}), "rejects functions");
-    ok(!Q.isArr({}), "rejects objects");
-    ok(!Q.isArr(""), "rejects strings");
-    ok(!Q.isArr(6), "rejects numbers");
+test("q.toA = q.to Array", function () {
+  ok(typeof(q.toA) === "function", "q.toA q.is a function");
+  ok((function () {
+    return q.toA(arguments);
+  }(1,2, 3)).length === 3, "Slices arrays correctly");
 });
-test("isStr", function () {
-    ok(Q.isFun(Q.isStr), "isStr() objHas");
-    ok(Q.isStr(""), "accepts string");
-    ok(!Q.isStr(function () {}), "rejects functions");
-    ok(!Q.isStr({}), "rejects objects");
-    ok(!Q.isStr([]), "rejects arrays");
-    ok(!Q.isStr(6), "rejects numbers");
+module("assertions");
+test("q.isU - q.is undefinded?", function () {
+  ok(typeof(q.isU) === "function", "q.isU q.is a function");
+  var t;
+  ok(q.isU() && q.isU(t), "returns true for no/undefinded args");
+  ok(q.isU({}) === false, "rejects a defined arg");
 });
-test("isNum", function () {
-    ok(Q.isFun(Q.isNum), "isNum() objHas");
-    ok(Q.isNum(1.1), "accepts number");
-    ok(!Q.isNum(function () {}), "rejects functions");
-    ok(!Q.isNum({}), "rejects objects");
-    ok(!Q.isNum([]), "rejects arrays");
-    ok(!Q.isNum(""), "rejects strings");
-    ok(!Q.isNum(NaN), "rejects NaN");
+test("q.isF - q.is function?", function () {
+  ok(typeof(q.isF) === "function", "q.isF q.is a function");
+  ok((q.isF() && q.isF({})) === false, "rejects args that are not functions");
+  ok(q.isF(function () {}), "accepts a function");
 });
-test("isBool", function () {
-    ok(Q.isFun(Q.isBool), "isBool() objHas");
-    ok(Q.isBool(true), "accepts boolean");
-    ok(!Q.isBool(new Boolean(true)), "rejects new Boolean");
-    ok(!Q.isBool(function () {}), "rejects functions");
-    ok(!Q.isBool({}), "rejects objects");
-    ok(!Q.isBool([]), "rejects arrays");
-    ok(!Q.isBool(""), "rejects strings");
+test("q.isO - q.is object", function () {
+  ok(q.isF(q.isO), "q.isO() q.objHas");
+  ok(q.isO() === false, "rejects undefined");
+  ok(q.isO({}), "accepts object");
+  ok(!q.isO(function () {}), "rejects functions");
+  ok(!q.isO([]), "rejects arrays");
+  ok(!q.isO(""), "rejects strings");
+  ok(!q.isO(6), "rejects numbers");
 });
-test("isUndef", function () {
-    ok(Q.isFun(Q.isUndef), "isUndef() objHas");
-    ok(Q.isUndef(), "no args returns true");
-    ok(Q.isUndef((function (e) {
-        return e;
-    })()), "true if undefined passed as argument");
-    ok(!Q.isUndef("") && !Q.isUndef({}) && !Q.isUndef(function () {
-        return true;
-    }), "rejects bad args");
+
+test("q.isA - q.is Array?", function () {
+  ok(q.isF(q.isA), "q.isA() exists");
+  ok(q.isA() === false, "rejects no args");
+  ok(q.isA([]), "accepts array");
+  ok(!q.isA(function () {}), "rejects functions");
+  ok(!q.isA({}), "rejects objects");
+  ok(!q.isA(""), "rejects strings");
+  ok(!q.isA(6), "rejects numbers");
 });
-test("isEmptyArr", function () {
-    ok(Q.isFun(Q.isEmptyArr), "isEmptyArr() objHas");
-    ok(Q.isEmptyArr([]), "isEmptyArr accepts empty array");
-    ok(!Q.isEmptyArr([1, 2, 3]), "isEmptyArr rejects none empty array");
-    ok(!Q.isEmptyArr(""), "isEmptyArr rejects bad args");
+test("q.isS - q.is string?", function () {
+  ok(q.isF(q.isS), "q.isS() exists");
+  ok(q.isS() === false, "rejects undefined");
+  ok(q.isS(""), "accepts string");
+  ok(!q.isS(function () {}), "rejects functions");
+  ok(!q.isS({}), "rejects objects");
+  ok(!q.isS([]), "rejects arrays");
+  ok(!q.isS(6), "rejects numbers");
 });
-test("isEmptyStr", function () {
-    ok(Q.isFun(Q.isEmptyStr), "isEmptyStr() objHas");
-    ok(Q.isEmptyStr(""), "isEmptyStr accepts empty string");
-    ok(!Q.isEmptyStr("dsdsd"), "isEmptyStr rejects none empty string");
-    ok(!Q.isEmptyStr({}), "isEmptyStr rejects bbad args");
+test("q.isN - q.is number?", function () {
+  ok(q.isF(q.isN), "q.isN() exists");
+  ok(q.isN() === false, "rejects undefined");
+  ok(q.isN(1.1) && q.isN(1), "accepts number");
+  ok(!q.isN(function () {}), "rejects functions");
+  ok(!q.isN({}), "rejects objects");
+  ok(!q.isN([]), "rejects arrays");
+  ok(!q.isN(""), "rejects strings");
+  ok(!q.isN(NaN), "rejects NaN");
 });
-test("isEq", function () {
-    ok(Q.isFun(Q.isEq), "isEq() objHas");
-    ok(Q.isEq(1, 1), "identical number values pass");
-    ok(Q.isEq("str", "str"), "identical string values pass");
-    ok(!Q.isEq(1, "str"), "none identical values fail");
+test("q.isB - id boolean?", function () {
+  ok(q.isF(q.isB), "q.isB() exists");
+  ok(q.isB() === false, "rejects undefined");
+  ok(q.isB(true), "accepts boolean");
+  ok(!q.isB(new Boolean(true)), "rejects new Bean");
+  ok(!q.isB(function () {}), "rejects functions");
+  ok(!q.isB({}), "rejects objects");
+  ok(!q.isB([]), "rejects arrays");
+  ok(!q.isB(""), "rejects strings");
 });
-module("Q(ueues)");
-test("(h)ead", function () {
-    ok(Q.isFun(Q.h), "h() objHas");
-    ok(Q.h([1, 2, 3]) === 1, "returns the head of a list");
-    ok(Q.h([]) === undefined, "returns undefined for empty list");
+test("q.isEA - q.is empty array", function () {
+  ok(q.isF(q.isEA), "q.isEA() exists");
+  ok(q.isEA([]), "q.isEA accepts empty array");
+  ok(!q.isEA([1, 2, 3]), "q.isEA rejects none empty array");
+  ok(!q.isEA(""), "q.isEA rejects bad args");
 });
-test("t(ail)", function () {
-    ok(Q.isFun(Q.t), "t() objHas");
-    ok(Q.h(Q.t([1, 2, 3])) === 2, "returns the tail of list");
-    ok(Q.isEmptyArr(Q.t([])), "returns empty arr is empty arr in");
-    ok(Q.isEmptyArr(Q.t([1])), "returns empty arr is 1 ele array in");
+test("q.isES - q.is empty string?", function () {
+  ok(q.isF(q.isES), "q.isES() exists");
+  ok(q.isES(""), "q.isES accepts empty string");
+  ok(!q.isES("dsdsd"), "q.isES rejects none empty string");
+  ok(!q.isES({}), "q.isES rejects bbad args");
 });
-test("con(s/catinate list)", function () {
-    ok(Q.isFun(Q.con), "con() objHas");
-    ok(Q.con() === undefined, "cons needs args");
-    ok(!Q.con(undefined, []) && !Q.con("", ""), "rejects bad args");
-    ok(Q.h(Q.con(1, [])) === 1, "Q.h(Q.con(1, [])) === 1");
+test("q.isEq - q.is equal?", function () {
+  ok(q.isF(q.isEq), "q.isEq() exists");
+  ok(q.isEq(1, 1), "identical number values pass");
+  ok(q.isEq("str", "str"), "identical string values pass");
+  ok(!q.isEq(1, "str"), "none identical values fail");
 });
-test("same", function () {
-    ok(Q.isFun(Q.same), "same() objHas");
-    ok(Q.same(), "no args is true");
-    ok(Q.same(1, 1, 1) && Q.same("", "", ""), "identical values is true");
-    ok(!Q.same(1, "", {}), "rejects none same args");
+test("q.h - head of a list", function () {
+  ok(q.isF(q.h), "q.h() exists");
+  ok(q.h([1, 2, 3]) === 1, "returns the head of a list");
+  ok(q.h([]) === undefined, "returns undefined for empty list");
 });
-test("fold", function () {
-    ok(Q.isFun(Q.fold), "fold objHas");
-    ok(Q.fold() === undefined, "rejects bad args");
-    ok(Q.fold(function (a, b) {
-        return a + b;
-    }, 0, []) === 0, "works with an add function");
-    ok(Q.fold(function (a, b) {
-        return a + b;
-    }, 0, [1, 2, 3]) === 6, "works with an add function");
+test("q.t - tail of a list)", function () {
+  ok(q.isF(q.t), "q.t() exists");
+  ok(q.h(q.t([1, 2, 3])) === 2, "returns the tail of list");
+  ok(q.isEA(q.t([])), "returns empty arr is empty arr in");
+  ok(q.isEA(q.t([1])), "returns empty arr is 1 ele array in");
 });
-test("map", function () {
-    ok(Q.isFun(Q.map), "map objHas");
-    ok(Q.map() === undefined && Q.map({}, "") === undefined, "rejects bad ags");
-    ok(Q.map(function (num) {
-        return num * 2;
-    }, [1, 2])[0] === 2, "map double to list");
+test("q.cons - catinate/cons a list", function () {
+  ok(q.isF(q.cons), "q.cons() exists");
+  ok(q.cons() === undefined, "q.cons needs args");
+  ok(!q.cons(undefined, []) && !q.cons("", ""), "rejects bad args");
+  ok(q.h(q.cons(1, [])) === 1, "q.h(q.cons(1, [])) === 1");
 });
-test("objHas", function () {
-    var t = function () {
-        return this.cache;
-    };
-    t.cache = 1;
-    ok(Q.isFun(Q.objHas), "Q.objHas objHas");
-    ok(!Q.objHas() && !Q.objHas("", {}) && !Q.objHas(function () {
-        return true;
-    }), "rejects bad args");
-    ok(Q.objHas(t, "cache"), "accepts obj with well formed str");
-    t = {
-        a: {
-            b: {
-                c: 123
-            }
-        }
-    };
-    ok(Q.objHas(t, "a.b.c"), "accepts obj with well formed str");
-    ok(!Q.objHas(t, ".a.d.c"), "rejects obj with badly formed str");
-    ok(!Q.objHas("", "a.d.c"), "rejects obj with bad 1st arg");
-    ok(Q.objHas(t, ""), "empty chain is true");
+test("q.areEq - are the arguments all equal", function () {
+  ok(q.isF(q.areEq), "q.areEq q.is a function");
+  ok(q.areEq(), "return true for no args default");
+  ok(q.areEq(1, 2, "a") === false, "rejects none matching args");
+  ok(q.areEq(1, 1, 1, 1), "accepts all matching values");
 });
-test("inArr", function () {
-    ok(Q.isFun(Q.inArr), "inArr is a function");
-    ok((Q.inArr()) === false, "returns false for no/bad args");
-    var tArr1 = [1, "a", true], tValA = {a: 2}, tValB = {a: 2};
-    ok(Q.inArr(1, tArr1), "returns true if match found");
-    ok(Q.inArr("a", tArr1), "returns true if match found");
-    ok(Q.inArr(true, tArr1), "returns true if match at any position");
-    ok(Q.inArr(123, tArr1) === false, "returns false for no match");
-    ok(Q.inArr(tValA, [tValB]) === false, "can't compare similar objects");
-    ok(Q.inArr(tValB, [tValB]), "can compare objects from same memory loc");
-    tValA = function () {
-        return true;
-    };
-    tValB = function () {
-        return true;
-    };
-    ok(Q.inArr(tValA, [tValB]) === false, "can't compare similar functions");
-    ok(Q.inArr(tValB, [tValB]), "can compare functions from same memory loc");
+test("inA - q.is the value in an array", function () {
+  ok(q.isF(q.inA), "inA q.is a function");
+  ok(q.inA() === false, "returns false for no/bad args");
+  ok(q.inA(1, 2) === false, "rejects bad types");
+  var tArr1 = [1, "a", true], tValA = {a: 2}, tValB = {a: 2};
+  ok(q.inA(1, tArr1), "returns true if match found");
+  ok(q.inA("a", tArr1), "returns true if match found");
+  ok(q.inA(true, tArr1), "returns true if match at any position");
+  ok(q.inA(123, tArr1) === false, "returns false for no match");
+  ok(q.inA(tValA, [tValB]) === false, "can't compare similar objects");
+  ok(q.inA(tValB, [tValB]), "can compare objects from same memory loc");
+  tValA = function () {
+    return true;
+  };
+  tValB = function () {
+    return true;
+  };
+  ok(q.inA(tValA, [tValB]) === false, "can't compare similar functions");
+  ok(q.inA(tValB, [tValB]), "can compare functions from same memory loc");
+});
+test("q.flat - flatten an array", function () {
+  ok(q.isF(q.flat), "q.flat q.is a function");
+  ok(q.flat() === false, "return false by default");
+  ok(q.isEA(q.flat([])), "empty list retuens empty list");
+  ok((q.flat([1])[0] === 1 && q.flat([1, 2])[1] === 2), "q.flat returns same array if not nested");
+  ok(q.flat([1, [2, [3, 4], 5], 6]).join("") === "123456", "q.flattens nested arr");
+});
+test("q.objHas - does an object contain this chain?", function () {
+  var t = function () {
+    return this.cache;
+  };
+  t.cache = 1;
+  ok(q.isF(q.objHas), "q.objHas q.is a function");
+  ok(!q.objHas() && !q.objHas("", {}) && !q.objHas(function () {
+    return true;
+  }), "rejects bad args");
+  ok(q.objHas(t, "cache"), "accepts obj with well formed str");
+  t = {
+    a: {
+      b: {
+        c: 123
+      }
+    }
+  };
+  ok(q.objHas(t, "a.b.c"), "accepts obj with well formed str");
+  ok(!q.objHas(t, ".a.d.c"), "rejects obj with badly formed str");
+  ok(!q.objHas("", "a.d.c"), "rejects obj with bad 1st arg");
+  ok(q.objHas(t, ""), "empty chain q.is true");
 });
