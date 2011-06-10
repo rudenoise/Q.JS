@@ -8,7 +8,7 @@ Methods starting is* return boolean for first argument.
 
 The rest allow creation of functions that iterate over lists (fold and map are probably most usefull).
 
-Q is heavil inspired by Scheme and the exercise in the Little Schemer by Daniel P Freidman and Matthhias Felleisen.
+Q is heavily inspired by Scheme and the exercises in the Little Schemer by Daniel P Freidman and Matthhias Felleisen.
 
 isF(untion)
 isO(bject)
