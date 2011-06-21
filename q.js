@@ -1,4 +1,5 @@
-// Q.JS List/Array based templating by Joel Hughes - http://github.com/rudenoise/Q.JS - http://joelughes.co.uk
+// Q.JS functions for making assertions and queue/list/array processing more straight forward. by Joel Hughes
+// http://github.com/rudenoise/Q.JS - http://joelughes.co.uk
 // Q.JS by Joel Hughes is licensed under a Creative Commons Attribution 3.0 Unported License
 var q = (function (q) {
   q.toS = function (x) {
