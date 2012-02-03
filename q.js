@@ -25,7 +25,7 @@ var q = (function (q) {
   };
   q.isA = function (a) {
     // q.is "a" an Array?
-    return q.isU(a) ?
+    return a === null || q.isU(a) ?
       false :
       typeof(a.length) === 'number' &&
       !(a.propertyIsEnumerable('length')) &&

@@ -44,6 +44,7 @@ test("q.isA - q.is Array?", function () {
   ok(!q.isA({}), "rejects objects");
   ok(!q.isA(""), "rejects strings");
   ok(!q.isA(6), "rejects numbers");
+  ok(!q.isA(null), "rejects null");
 });
 test("q.isS - q.is string?", function () {
   ok(q.isF(q.isS), "q.isS() exists");
