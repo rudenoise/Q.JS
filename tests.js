@@ -34,6 +34,7 @@ test("q.isO - q.is object", function () {
   ok(!q.isO([]), "rejects arrays");
   ok(!q.isO(""), "rejects strings");
   ok(!q.isO(6), "rejects numbers");
+  ok(!q.isO(null), "rejects null");
 });
 
 test("q.isA - q.is Array?", function () {
